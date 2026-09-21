@@ -1,0 +1,8 @@
+# Temporary and cache files
+burst_temp/
+*.tmp
+*.log
+.DS_Store
+__pycache__/
+*.swp
+*~
