@@ -1,8 +1,18 @@
 # Temporary and cache files
-burst_temp/
+burst_temp*/
 *.tmp
 *.log
 .DS_Store
 __pycache__/
+*.py[cod]
+*$py.class
 *.swp
 *~
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Pre-trained models and weights (keep repo lean)
+*.pth
+*.pt
+*.onnx

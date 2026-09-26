@@ -1,7 +1,7 @@
 # 📋 ژورنال و مستندات فنی پروژه بهبود و ارتقای ویدیوی دوربین مداربسته
 **تاریخ:** ۲۱ سپتامبر ۲۰۲۶  
 **موضوع:** بهبود کیفیت، وضوح و وضوح چهره در ویدیوی نظارتی شبانه (`video_2026-09-21_10-06-40.mp4`)  
-**مسیر پروژه:** `/home/abolfazl/workSpace/devSpace/cctv-enhancement-project/`
+**مسیر پروژه:** `/home/abolfazl/workSpace/devWorkspace/cctv-enhancement-project/`
 
 ---
 
@@ -84,7 +84,7 @@
 ## ۴. ساختار پوشه‌ها و فایل‌های تحویلی پروژه
 
 ```text
-/home/abolfazl/workSpace/devSpace/cctv-enhancement-project/
+/home/abolfazl/workSpace/devWorkspace/cctv-enhancement-project/
 ├── JOURNAL.md                                # همین سند (گزارش و ژورنال کامل مهندسی)
 ├── notebooks/
 │   └── CodeFormer_CCTV_Enhance.ipynb         # نوت‌بوک کامل و تصحیح‌شده Google Colab
@@ -112,7 +112,7 @@
 
 ### اجرای فیلترهای سنتی محلی:
 ```bash
-cd /home/abolfazl/workSpace/devSpace/cctv-enhancement-project/scripts
+cd /home/abolfazl/workSpace/devWorkspace/cctv-enhancement-project/scripts
 ./01_forensic_enhancement.sh
 ```
 
