@@ -4,7 +4,7 @@ A computer vision and forensic video processing toolkit engineered to restore de
 
 ---
 
-## 📖 About This Project
+## About This Project
 
 ### 1. Problem Statement & Background
 Surveillance cameras operating in low-light night conditions face severe optical and digital constraints:
@@ -26,7 +26,7 @@ This project establishes a four-stage hybrid pipeline balancing forensic authent
 
 ---
 
-## 📁 Repository Structure
+## Repository Structure
 
 ```text
 ├── README.md                                 # Project documentation and guide
@@ -53,7 +53,7 @@ This project establishes a four-stage hybrid pipeline balancing forensic authent
 
 ---
 
-## 🚀 Usage Guide
+## Usage Guide
 
 ### Prerequisites
 * **FFmpeg** (with `libx264`, `hqdn3d`, and `cas` filter support)
@@ -86,7 +86,7 @@ Extracts a burst of consecutive frames and temporally averages them to reduce Po
 
 ---
 
-## 🔬 Restoration Levels Comparison
+## Restoration Levels Comparison
 
 | Level | Method | Hallucination Risk | Primary Use Case |
 | :--- | :--- | :--- | :--- |
@@ -98,8 +98,8 @@ Extracts a burst of consecutive frames and temporally averages them to reduce Po
 
 ---
 
-## 📜 Documentation & Journal
+## Documentation & Journal
 For the complete technical development log, step-by-step experiment records, and Persian documentation, see **[JOURNAL.md](JOURNAL.md)**.
 
-## 📄 License
+## License
 This project is released under the [MIT License](LICENSE).
