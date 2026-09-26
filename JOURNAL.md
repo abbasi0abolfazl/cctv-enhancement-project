@@ -1,127 +1,131 @@
-# ژورنال و مستندات فنی پروژه بهبود و ارتقای ویدیوی دوربین مداربسته
-**تاریخ:** ۲۱ سپتامبر ۲۰۲۶  
-**موضوع:** بهبود کیفیت، وضوح و وضوح چهره در ویدیوی نظارتی شبانه (`video_2026-09-21_10-06-40.mp4`)  
-**مسیر پروژه:** `/home/abolfazl/workSpace/devWorkspace/cctv-enhancement-project/`
+# Technical Engineering Journal: CCTV Video & Facial Enhancement
+
+**Date:** September 21, 2026  
+**Subject:** Quality enhancement, edge sharpness, and facial clarity restoration in night surveillance footage (`video_2026-09-21_10-06-40.mp4`)  
+**Project Path:** `/home/abolfazl/workSpace/devWorkspace/cctv-enhancement-project/`
 
 ---
 
-## ۱. مشخصات اولیه و آنالیز تصویر ورودی
+## 1. Baseline Specifications & Input Image Analysis
 
-- **فایل منبع:** `video_2026-09-21_10-06-40.mp4`
-- **مدت زمان:** ۱۵.۳ ثانیه (۴۵۸ فریم با نرخ ۳۰ فریم بر ثانیه)
-- **رزولوشن ذخیره‌شده:** ۱۰۸۰×۱۲۴۸ پیکسل (کدک AVC/H.264، بیت‌ریت ~۸.۶ مگابیت)
-- **محیط سخت‌افزاری:** سیستم‌عامل لینوکس با پردازنده و گرافیک مجتمع AMD Renoir (Radeon Vega Mobile).
-- **ماهیت و چالش‌های اپتیکال:**
-  - ویدیو مربوط به دوربین مداربسته (CCTV) در شب است.
-  - کادر موجود یک **زوم دیجیتال شدید** بر روی سنسور اصلی با رزولوشن واقعی پایین است.
-  - ابعاد واقعی سر و صورت افراد در کادر کمتر از **۱۵×۱۵ پیکسل** است.
-  - نویز حرارتی شدید در تاریکی، آرتیفکت‌های فشرده‌سازی بلوکی (Macroblocking) و سایه‌های فاقد داینامیک رنج کافی.
-
----
-
-## ۲. تدوین سه استراتژی اولیه
-
-در ابتدای پروژه، سه مسیر مهندسی پیش‌بینی شد:
-1. **استراتژی اول (نرم‌افزارهای تجاری AI Video Enhancer):** ابزارهایی مثل Topaz Video AI (مدل Iris LQ).
-2. **استراتژی دوم (مدل‌های منبع‌باز بازسازی صورت - CodeFormer + Real-ESRGAN):** تمرکز بر بازسازی چهره با مدل‌های تخصصی روی Google Colab.
-3. **استراتژی سوم (پردازش سیگنال و فیلترهای فورنزیک ریاضی بدون هوش مصنوعی):** استفاده از زنجیره فیلترهای FFmpeg جهت استنادپذیری قانونی بدون ایجاد داده‌های ساختگی.
+- **Source File:** `video_2026-09-21_10-06-40.mp4`
+- **Duration:** 15.3 seconds (458 frames at 30 fps)
+- **Container Resolution:** 1080x1248 pixels (AVC/H.264 codec, ~8.6 Mbps bitrate)
+- **Hardware Environment:** Linux OS with AMD Renoir APU (Radeon Vega Mobile graphics)
+- **Optical Nature & Inherent Constraints:**
+  - Footage captured by a surveillance camera (CCTV) in night conditions.
+  - The frame is an **extreme digital crop/zoom** of the primary sensor, which has low native resolution.
+  - The actual physical resolution of the subjects' heads and faces in the frame is under **15×15 pixels**.
+  - High thermal sensor noise in dark regions, heavy macroblocking artifacts (8×8 compression blocks), and crushed shadows with poor dynamic range.
 
 ---
 
-## ۳. وقایع‌نگاری مراحل انجام پروژه (Chronological Steps)
+## 2. Formulation of Three Core Strategies
 
-### مرحله ۱: اجرای استراتژی سوم (بهینه‌سازی حداکثری فورنزیک با FFmpeg)
-با درخواست کاربر مبنی بر اجرای بالاترین حد ممکن از گزینه ۳، یک خط لوله پردازشی ۴ مرحله‌ای طراحی و اجرا شد:
-- **Deblocking (`deblock`):** رفع خطوط دندانه‌اره‌ای بلوک‌های پیکسلی ۸×۸ سنسور.
-- **Denoising زمانی-مکانی (`hqdn3d`):** پالایش برفک و پرش‌های سنسور در زمینه تاریک بدون تار کردن سوژه‌های متحرک.
-- **تیزسازی تطبیقی کنتراست (`AMD CAS`):** افزایش وضوح مرز لباس‌ها و بدن افراد بدون ایجاد هاله سفید دور سوژه‌ها.
-- **اصلاح سطوح و گاما (`eq/gamma`):** آشکارسازی بافت‌های پنهان‌شده در سایه لباس‌ها.
-- **خروجی:** تولید ویدیوی بهینه‌شده در مسیر `results/videos/video_enhanced_forensic.mp4`.
-- **نتیجه و چالش:** هرچند زمینه تمیز شد و لبه‌ها واضح‌تر شدند، اما چون اپتیک اولیه تنها ۱۵ پیکسل برای صورت ثبت کرده بود، ریاضیات سنتی قادر به نمایش چشم، ابرو و بینی نبود و تفاوت چشمگیری برای چشم کاربر ایجاد نکرد.
+At the outset of the project, three engineering avenues were mapped out:
+1. **Strategy 1 (Commercial AI Video Enhancers):** Off-the-shelf tools such as Topaz Video AI (Iris LQ model).
+2. **Strategy 2 (Open-Source Face Restoration Models - CodeFormer + Real-ESRGAN):** Specialized deep face restoration models executed via Google Colab GPU runtimes.
+3. **Strategy 3 (Mathematical Digital Signal Processing & Forensic Filters without AI):** Deterministic FFmpeg filter graphs to maximize forensic admissibility and prevent the generation of synthetic data.
 
 ---
 
-### مرحله ۲: مهاجرت به استراتژی دوم (Google Colab و بازسازی با CodeFormer)
-برای حل چالش چهره‌ها، نوت‌بوک اختصاصی کولب طراحی شد (`notebooks/CodeFormer_CCTV_Enhance.ipynb`). در این مرحله دو چالش فنی پیش آمد و رفع شد:
+## 3. Chronological Engineering Log
 
-1. **رفع خطای آرگومان کولب:**  
-   - خطا: `inference_codeformer.py: error: unrecognized arguments: False`
-   - علت: سوئیچ `--has_aligned` در ساختار argparse یک boolean flag از نوع `action="store_true"` است و پذیرنده کلمه `False` نبود. با حذف این سوئیچ برای ویدیوهای ترازنشده، مشکل کاملاً برطرف شد.
-2. **چالش عدم شناسایی چهره (No face detected):**  
-   - مدل‌های تشخیص صورت خودکار (RetinaFace) در یک بوم بزرگ ۱۰۸۰×۱۲۴۸ به دنبال صورت‌های بالای ۶۰ پیکسل می‌گردند. در این ویدیو به دلیل کوچک بودن بیش از حد چهره در گوشه کادر، دیتکتور آن‌ها را به عنوان نویز پس‌زمینه فیلتر کرد و هیچ صورتی برای بازسازی پیدا نکرد.
-
----
-
-### مرحله ۳: آزمایش هوش مصنوعی مولد و دریافت بازخورد کلیدی کاربر
-برای تست سقف کیفیت ممکن، بازسازی مولد با هوش مصنوعی عمیق روی فریم منتخب انجام شد (`results/images/enhanced_ai_frame.jpg`).  
-- **نتیجه:** تصویر به وضوح فوق‌العاده بالایی رسید، اما هوش مصنوعی برای پر کردن جای خالی پیکسل‌ها، چهره‌های کاملاً جدیدی «نقاشی» کرد.
-- **بازخورد طلایی کاربر:**  
-  > *«خیلی سعی کردی وضوح را عالی کنی، نیاز نیست انقدر عالی باشه که غیرواقعی باشه، چند مرحله قبل‌تر هم خوبه که تصویر ساخته نشه.»*
-- **تصمیم فنی:** توقف استفاده از هوش مصنوعی مولد تخیلی (Hallucinatory Diffusion) و بازگشت به تکنیک‌های وفادارانه (Fidelity-based Restoration).
+### Step 1: Executing Strategy 3 (Maximum Forensic Filtering with FFmpeg)
+Per user request to push deterministic non-AI filtering to its limits, a 4-stage processing pipeline was engineered:
+- **Deblocking (`deblock`):** Attenuated jagged 8×8 sensor/compression block boundaries.
+- **Spatio-Temporal Denoising (`hqdn3d`):** Filtered sensor grain and dark-background flicker without blurring moving human subjects.
+- **Contrast Adaptive Sharpening (`AMD CAS`):** Enhanced edge contrast along clothing and silhouettes without introducing white halos.
+- **Levels & Gamma Equalization (`eq/gamma`):** Uncovered texture previously crushed within dark clothing shadows.
+- **Output:** Produced `results/videos/video_enhanced_forensic.mp4`.
+- **Finding & Limitation:** While the background was cleaned and silhouettes became sharper, the initial optics captured fewer than 15 pixels across each face. Pure deterministic DSP cannot synthesize missing optical photons (eyes, nose, eyebrows); subjective facial clarity showed negligible improvement.
 
 ---
 
-### مرحله ۴: ساخت ۳ سطح میانی طبیعی (بدون چهره ساختگی)
-برای پاسخ به نیاز «چند مرحله قبل‌تر»، از تکنیک ترکیب فریم‌های متوالی (Multi-Frame Stacking) استفاده شد:
-- استخراج ۱۰ فریم متوالی در ثانیه ۸ با فیلتر `tmix` جهت خنثی‌سازی نویز تصادفی سنسور.
-- نرم‌سازی پیکسلی (Bilateral Anti-aliasing).
-- تولید سه سطح خروجی بدون حتی ۱ پیکسل ساختگی:
-  - **سطح ۱ (`natural_enhancement_level1.jpg`):** حذف شطرنجی و حفظ اصالت ۱۰۰٪.
-  - **سطح ۲ (`natural_enhancement_level2.jpg`):** ترکیب فریم‌ها و آشکارسازی فرم واقعی سر، دست‌ها و بدن.
-  - **سطح ۳ (`natural_enhancement_level3.jpg`):** وضوح ساختاری فورنزیک بدون فیک‌سازی.
+### Step 2: Transition to Strategy 2 (Google Colab & CodeFormer Restoration)
+To resolve facial features, a dedicated Google Colab notebook was built (`notebooks/CodeFormer_CCTV_Enhance.ipynb`). Two technical obstacles were identified and resolved:
+
+1. **Colab Argument Syntax Error:**
+   - Error: `inference_codeformer.py: error: unrecognized arguments: False`
+   - Cause: The `--has_aligned` flag in `argparse` is a boolean flag (`action="store_true"`) and does not accept `False` as a string parameter. Omitting the flag for unaligned video frames resolved the failure.
+2. **Face Detection Failure (No face detected):**
+   - Automated face detection networks (RetinaFace) operating on the full 1080×1248 canvas look for faces larger than 60 pixels. Because faces occupied less than 15 pixels in a sub-region of the frame, the detector rejected them as background noise.
 
 ---
 
-### مرحله ۵: راه‌حل نهایی و مهندسی نقطه تعادل (The Sweet Spot)
-برای حل قطعی مشکل عدم شناسایی صورت در CodeFormer بدون ساختگی شدن چهره:
-1. **کراپ و زوم اختصاصی روی سوژه‌ها (`results/videos/video_people_focused.mp4`):**  
-   کادر ۴۸۰×۶۸۰ به صورت هوشمند روی ۳ نفر زوم و با الگوریتم لانچوز به ۹۶۰×۱۳۶۰ ارتقا یافت تا اندازه سر افراد در کادر **۴ تا ۵ برابر بزرگتر** شود.
-2. **تنظیم پارامتر وفاداری روی `w = 0.75`:**  
-   با این تنظیم، دیتکتور CodeFormer فوراً چهره‌ها را قفل می‌کند و به جای اختراع صورت جدید، تنها خطوط و فرم واقعی را شارپ می‌کند.
+### Step 3: Generative AI Experimentation & User Feedback
+To evaluate the absolute ceiling of visual resolution, deep generative AI restoration was applied to a selected frame (`results/images/enhanced_ai_frame.jpg`).
+- **Result:** The image achieved dramatic high-frequency sharpness. However, to fill in the missing pixel data, the neural network "painted" entirely synthetic facial features.
+- **User Feedback:**
+  > *"You tried too hard to make it clear. It doesn't need to be so perfect that it looks fake; a few steps earlier is better so that the image is not fabricated."*
+- **Engineering Decision:** Discontinue unconstrained generative diffusion (hallucinatory synthesis) and transition to fidelity-constrained restoration.
 
 ---
 
-## ۴. ساختار پوشه‌ها و فایل‌های تحویلی پروژه
+### Step 4: Engineering 3 Natural Intermediate Levels (Zero Hallucination)
+To satisfy the requirement of an earlier, natural intermediate stage, multi-frame temporal stacking was implemented:
+- Extracted a burst of 10 consecutive frames around second 8 using the `tmix` filter to cancel out stochastic Poisson noise.
+- Applied bilateral anti-aliasing.
+- Generated three progressive output levels without synthesizing any artificial pixels:
+  - **Level 1 (`natural_enhancement_level1.jpg`):** Block artifact removal with 100% evidentiary authenticity.
+  - **Level 2 (`natural_enhancement_level2.jpg`):** 10-frame stacking revealing true anatomical form of heads, hands, and bodies.
+  - **Level 3 (`natural_enhancement_level3.jpg`):** Forensic structural sharpening without artificial feature generation.
+
+---
+
+### Step 5: Final Engineering Solution ("The Sweet Spot")
+To reliably trigger CodeFormer's face detector without fabricating faces:
+1. **Targeted Region-of-Interest (ROI) Zoom (`results/videos/video_people_focused.mp4`):**
+   A 480×680 bounding window was cropped around the three subjects and upscaled with a 2x Lanczos filter to 960×1360. This enlarged the subjects' heads **4 to 5 times larger** relative to the frame.
+2. **Fidelity Weight Anchoring ($w = 0.75$):**
+   With the enlarged ROI, CodeFormer detects faces instantly. Setting the fidelity weight to $w = 0.75$ constrains the model to sharpen existing contours while preventing it from inventing a foreign persona.
+
+---
+
+## 4. Repository Structure & Deliverables
 
 ```text
 /home/abolfazl/workSpace/devWorkspace/cctv-enhancement-project/
-├── JOURNAL.md                                # همین سند (گزارش و ژورنال کامل مهندسی)
+├── README.md                                 # Primary project documentation
+├── JOURNAL.md                                # Engineering journal (English)
+├── JOURNAL_FA.md                             # Engineering journal (Persian original)
 ├── notebooks/
-│   └── CodeFormer_CCTV_Enhance.ipynb         # نوت‌بوک کامل و تصحیح‌شده Google Colab
+│   ├── CodeFormer_CCTV_Enhance.ipynb         # Google Colab notebook (English)
+│   └── CodeFormer_CCTV_Enhance_FA.ipynb      # Google Colab notebook (Persian)
 ├── scripts/
-│   ├── 01_forensic_enhancement.sh            # اسکریپت اعمال فیلترهای فورنزیک (روش ۳)
-│   ├── 02_crop_and_focus.sh                  # اسکریپت زوم و کراپ ویدیو برای دیتکتور چهره
-│   ├── 03_multiframe_stacking.sh             # اسکریپت ترکیب فریم‌های متوالی (Multi-frame Stacking)
-│   └── 04_extract_frames.sh                  # استخراج فریم‌های ثانیه‌ای ویدیو
+│   ├── 01_forensic_enhancement.sh            # Forensic DSP filter pipeline
+│   ├── 02_crop_and_focus.sh                  # ROI cropping & 2x Lanczos super-sampling
+│   ├── 03_multiframe_stacking.sh             # 10-frame burst temporal averaging
+│   └── 04_extract_frames.sh                  # 1-FPS frame extraction utility
 └── results/
     ├── videos/
-    │   ├── video_enhanced_forensic.mp4       # ویدیوی بهینه‌شده با روش ۳
-    │   └── video_people_focused.mp4          # ویدیوی زوم‌شده آماده برای CodeFormer
+    │   ├── video_enhanced_forensic.mp4       # Forensic DSP enhanced video
+    │   └── video_people_focused.mp4          # Cropped, super-sampled video for CodeFormer
     └── images/
-        ├── enhanced_ai_frame.jpg             # خروجی مولد آزمایشی (فول AI)
-        ├── natural_enhancement_level1.jpg    # فریم بهینه‌شده طبیعی سطح ۱
-        ├── natural_enhancement_level2.jpg    # فریم بهینه‌شده طبیعی سطح ۲ (استک ۱۰ فریم)
-        ├── natural_enhancement_level3.jpg    # فریم بهینه‌شده طبیعی سطح ۳ (شارپ فورنزیک)
-        ├── natural_faces_closeup.jpg         # کلوزآپ چهره‌های واقعی بدون تغییر هویت
-        └── cctv_frames/                      # فریم‌های استخراج‌شده ثانیه‌های ۱ تا ۱۵
+        ├── enhanced_ai_frame.jpg             # High-generation reference test (AI hallucination demo)
+        ├── natural_enhancement_level1.jpg    # Level 1 authentic deblocked frame
+        ├── natural_enhancement_level2.jpg    # Level 2 10-frame stacked frame
+        ├── natural_enhancement_level3.jpg    # Level 3 forensic sharpened frame
+        ├── natural_faces_closeup.jpg         # Closeup of natural faces without alteration
+        └── cctv_frames/                      # Extracted 1-FPS frame series
 ```
 
 ---
 
-## ۵. دستورالعمل بازتولید نتایج (Reproduction Guide)
+## 5. Reproduction Guide
 
-### اجرای فیلترهای سنتی محلی:
+### Running Local Deterministic Filters:
 ```bash
 cd /home/abolfazl/workSpace/devWorkspace/cctv-enhancement-project/scripts
-./01_forensic_enhancement.sh
+./01_forensic_enhancement.sh input_video.mp4 results/videos/video_enhanced_forensic.mp4
 ```
 
-### آماده‌سازی ویدیو برای کولب:
+### Preparing Video for Neural Restoration:
 ```bash
-./02_crop_and_focus.sh
+./02_crop_and_focus.sh input_video.mp4 results/videos/video_people_focused.mp4
 ```
 
-### دستور اجرایی نهایی در Google Colab (نقطه تعادل با $w=0.75$):
+### Execution Command in Google Colab (Fidelity Anchor $w = 0.75$):
 ```bash
 !python inference_codeformer.py \
     -i "/content/CodeFormer/video_people_focused.mp4" \

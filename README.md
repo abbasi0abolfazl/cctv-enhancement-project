@@ -30,9 +30,11 @@ This project establishes a four-stage hybrid pipeline balancing forensic authent
 
 ```text
 ├── README.md                                 # Project documentation and guide
-├── JOURNAL.md                                # Detailed engineering logs and research history (Persian)
+├── JOURNAL.md                                # Detailed engineering logs and research history (English)
+├── JOURNAL_FA.md                             # Engineering journal in Persian (فارسی)
 ├── notebooks/
-│   └── CodeFormer_CCTV_Enhance.ipynb         # GPU-accelerated Google Colab workflow
+│   ├── CodeFormer_CCTV_Enhance.ipynb         # Google Colab restoration workflow (English)
+│   └── CodeFormer_CCTV_Enhance_FA.ipynb      # Google Colab restoration workflow (Persian / فارسی)
 ├── scripts/
 │   ├── 01_forensic_enhancement.sh            # Mathematical forensic filter chain (deblock, hqdn3d, CAS, eq)
 │   ├── 02_crop_and_focus.sh                  # Subject crop & 2x Lanczos super-sampling for face detectors
@@ -99,7 +101,10 @@ Extracts a burst of consecutive frames and temporally averages them to reduce Po
 ---
 
 ## Documentation & Journal
-For the complete technical development log, step-by-step experiment records, and Persian documentation, see **[JOURNAL.md](JOURNAL.md)**.
+For technical development logs and experiment records:
+* **[JOURNAL.md](JOURNAL.md)**: Full engineering journal in English.
+* **[JOURNAL_FA.md](JOURNAL_FA.md)**: Original engineering journal in Persian (فارسی).
 
 ## License
 This project is released under the [MIT License](LICENSE).
+
